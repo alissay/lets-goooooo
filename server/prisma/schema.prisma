@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+
+  tasks       Task[]
+  feelings    FeelingLog[]
+  usageEvents UsageEvent[]
+  goals       Goal[]
+}
+
+model Task {
+  id            String     @id @default(cuid())
+  title         String
+  firstStep     String?
+  domain        Domain
+  status        TaskStatus @default(PENDING)
+  urgencyLevel  Int        @default(0) // 0-3
+  softDueAt     DateTime?
+  breadcrumb    String?
+  isNowMode     Boolean    @default(false)
+  nowModeEndsAt DateTime?
+  createdAt     DateTime   @default(now())
+  completedAt   DateTime?
+  deferredAt    DateTime?
+  deferCount    Int        @default(0)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  goalId String?
+  goal   Goal?  @relation(fields: [goalId], references: [id])
+
+  @@index([userId, status])
+  @@index([userId, domain])
+}
+
+model Goal {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  domain      Domain
+  status      GoalStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  tasks  Task[]
+
+  @@index([userId, domain])
+}
+
+model FeelingLog {
+  id            String       @id @default(cuid())
+  type          LogType
+  state         FeelingState
+  note          String?
+  domainContext Domain?
+  loggedAt      DateTime     @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId, loggedAt])
+}
+
+model UsageEvent {
+  id         String   @id @default(cuid())
+  eventType  String
+  domain     Domain?
+  feature    String?
+  metadata   Json?
+  occurredAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@index([userId, occurredAt])
+}
+
+enum Domain {
+  WORK
+  FITNESS
+  NUTRITION
+  HABITS
+  ADMIN
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+  DEFERRED
+}
+
+enum GoalStatus {
+  ACTIVE
+  ACHIEVED
+  PAUSED
+}
+
+enum LogType {
+  AMBIENT_DAILY
+  IN_THE_MOMENT
+}
+
+enum FeelingState {
+  CRASHED
+  ROUGH
+  OKAY
+  GOOD
+  ON_FIRE
+}

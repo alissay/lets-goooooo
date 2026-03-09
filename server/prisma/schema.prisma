@@ -11,10 +11,11 @@ model User {
   id          String       @id @default(cuid())
   createdAt   DateTime     @default(now())
 
-  tasks       Task[]
-  feelings    FeelingLog[]
-  usageEvents UsageEvent[]
-  goals       Goal[]
+  tasks        Task[]
+  feelings     FeelingLog[]
+  usageEvents  UsageEvent[]
+  goals        Goal[]
+  evidenceLogs EvidenceLog[]
 }
 
 model Task {
@@ -47,14 +48,30 @@ model Goal {
   title       String
   description String?
   domain      Domain
+  goalType    GoalType   @default(STANDARD)
+  isPrivate   Boolean    @default(false)
   status      GoalStatus @default(ACTIVE)
   createdAt   DateTime   @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  tasks  Task[]
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  tasks        Task[]
+  evidenceLogs EvidenceLog[]
 
   @@index([userId, domain])
+}
+
+model EvidenceLog {
+  id        String   @id @default(cuid())
+  entry     String
+  loggedAt  DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  goalId String
+  goal   Goal   @relation(fields: [goalId], references: [id])
+
+  @@index([userId, loggedAt])
 }
 
 model FeelingLog {
@@ -104,6 +121,11 @@ enum GoalStatus {
   ACTIVE
   ACHIEVED
   PAUSED
+}
+
+enum GoalType {
+  STANDARD
+  CAREER
 }
 
 enum LogType {

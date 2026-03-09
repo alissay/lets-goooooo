@@ -45,6 +45,44 @@ async function main() {
     },
   });
 
+  // Career goal (private)
+  const careerGoal = await prisma.goal.create({
+    data: {
+      title: "Build the undeniable case for Head of Product",
+      description: "Track evidence of Head of Product work. Private - not visible in main feed.",
+      domain: "WORK",
+      goalType: "CAREER",
+      isPrivate: true,
+      userId,
+    },
+  });
+
+  // "Act Like One" recurring career tasks
+  const careerTasks = [
+    {
+      title: "Write a product decision doc this week",
+      firstStep: "Pick one recent decision you made verbally and open a new doc",
+    },
+    {
+      title: "Send an unprompted product update to the team",
+      firstStep: "Write 3 bullet points on what shipped or changed this week",
+    },
+    {
+      title: "Run a structured design review with Brian",
+      firstStep: "Pick one screen or flow and write down 3 questions to discuss",
+    },
+    {
+      title: "Document a user insight from something you observed",
+      firstStep: "Think of the last time a user struggled or said something surprising - write it down",
+    },
+  ];
+
+  for (const task of careerTasks) {
+    await prisma.task.create({
+      data: { ...task, domain: "WORK", userId, goalId: careerGoal.id },
+    });
+  }
+
   // Work tasks
   const workTasks = [
     {

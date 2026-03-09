@@ -7,12 +7,14 @@ import { TaskDetail } from "./pages/TaskDetail";
 import { Wins } from "./pages/Wins";
 import { Feel } from "./pages/Feel";
 import { Settings } from "./pages/Settings";
+import { Today } from "./pages/Today";
 
 export function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<RightNow />} />
+        <Route path="/today" element={<Today />} />
         <Route path="/capture" element={<Capture />} />
         <Route path="/domains/:domain" element={<DomainDashboard />} />
         <Route path="/task/:id" element={<TaskDetail />} />

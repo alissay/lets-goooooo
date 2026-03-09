@@ -17,9 +17,9 @@ export function Layout() {
 
   const navItems = [
     { to: "/", label: "Now" },
-    { to: "/domains", label: "Domains", action: () => setShowDomains(true) },
+    { to: "/today", label: "Today" },
     { to: "/capture", label: "+", isFab: true },
-    { to: "/wins", label: "Wins" },
+    { to: "/domains", label: "Domains", action: () => setShowDomains(true) },
     { to: "/feel", label: "Feel" },
   ];
 
@@ -36,9 +36,9 @@ export function Layout() {
           <div className="flex gap-1" style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}>
             {[
               { to: "/", label: "Now" },
+              { to: "/today", label: "Today" },
               { to: "/capture", label: "+" },
               { label: "Domains", action: () => setShowDomains(true) },
-              { to: "/wins", label: "Wins" },
               { to: "/feel", label: "Feel" },
             ].map((item, i) =>
               item.action ? (

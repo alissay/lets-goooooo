@@ -6,6 +6,7 @@ import { winRoutes } from "./routes/wins.js";
 import { goalRoutes } from "./routes/goals.js";
 import { pushRoutes } from "./routes/push.js";
 import { usageRoutes } from "./routes/usage.js";
+import { calendarRoutes } from "./routes/calendar.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -19,6 +20,8 @@ app.use("/api/wins", winRoutes);
 app.use("/api/goals", goalRoutes);
 app.use("/api/push", pushRoutes);
 app.use("/api/usage", usageRoutes);
+app.use("/api/auth/google", calendarRoutes);
+app.use("/api/calendar", calendarRoutes);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
